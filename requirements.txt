@@ -1,0 +1,6 @@
+Login for admins -> Button -> Adminpage
+* new content (pictext-box):
+	- title
+	- main text
+	- upload picture or video
+	
