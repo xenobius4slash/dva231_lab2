@@ -1,6 +1,5 @@
 <?php
 require_once '../../backend/class/Session.php';
-
 ### Session
 $S = new Session();
 $isLogin = false;
@@ -15,33 +14,25 @@ if( $S->isLoggedIn('frontend') === true ) { $isLogin = true; }  else { header('L
 	</head>
 	<body>
 		<div id="container" class="container">
-			<div id="menu_container" class="menu-container">
-				<a href="../../index.php">
-					<div id="menu_logo" class="nasa-logo">
-						<div class="fake">FAKE</div>
-						<img src="../img/nasa-logo.svg" />
-					</div>
-				</a>
-				<div class="page-title">
-					admin page
-					<div class="login-button-admin">
-						<?php if($isLogin) {
-							echo "<a href=\"index.php?logout=1\"><input type=\"button\" value=\"Logout\" /></a>";
-						} else {
-							echo "<a href=\"frontend/html/login.html\"><input type=\"button\" value=\"Login\" /></a>";
-						} ?>
-					</div>
-				</div>
-			</div>
+			<?php include 'menu.php'; ?>
 			<div id="main_container" class="main-container">
+				<div class="page-title">admin page</div>
 				<div class="message">
-					<?php if( isset($_GET['upload_ok']) ) {
+					<?php $err = false; $fontCol = "style=\"color: red; font-weight: bold;\"";
+						if(isset($_GET['error'])) {
+							$err = true;
+							$error = json_decode($_GET['error'], true);
+							echo "<span class=\"error\">There are one or more empty element(s).</span>";
+						}
+						if(isset($_GET['upload_ok'])) {
 							if( $_GET['upload_ok'] == 0 ) {
-								if($_GET['status'] == 1 ) { echo "<span class=\"error\">Wrong file type, only JPG, JPEG, PNG, GIF, MP4, OGV, OGG, AVI, FLV are allowed.</span>"; }
-								elseif($_GET['status'] == 2 ) { echo "<span class=\"error\">The file already exists.</span>"; }
-								elseif($_GET['status'] == 3 ) { echo "<span class=\"error\">The file is too large.</span>"; }
-								elseif($_GET['status'] == 4 ) { echo "<span class=\"error\">Internal error.</span>"; }
-								elseif($_GET['status'] == 5 ) { echo "<span class=\"error\">No media type was selected.</span>"; }
+								$err = true;
+								$error = json_decode($_GET['error'], true);
+								if($error['file_upload'][1] == 1 ) { echo "<span class=\"error\">Wrong file type, only JPG, JPEG, PNG, GIF, MP4, OGV, OGG, AVI, FLV are allowed.</span>"; }
+								elseif($error['file_upload'][2] == 1 ) { echo "<span class=\"error\">The file already exists.</span>"; }
+								elseif($error['file_upload'][3] == 1 ) { echo "<span class=\"error\">The file is too large.</span>"; }
+								elseif($error['file_upload'][4] == 1 ) { echo "<span class=\"error\">Internal error.</span>"; }
+								elseif($error['file_upload'][5] == 1 ) { echo "<span class=\"error\">No media type was selected.</span>"; }
 							} 
 							else { echo "<span class=\"success\">Upload complete.</span>"; }
 						}
@@ -53,19 +44,19 @@ if( $S->isLoggedIn('frontend') === true ) { $isLogin = true; }  else { header('L
 					</div>
 					<table>
 						<tr>
-							<td>title:</td>
+							<td><span <?=($err && $error['title']==1)?($fontCol):('')?>>title:</span></td>
 							<td><input type="text" id="title" name="title" maxlength="50"  size="50" /></td>
 						</tr>
 						<tr>
-							<td>subtitle <small>(col4)</small>:</td>
+							<td><span <?=($err && $error['subtitle']==1)?($fontCol):('')?>>subtitle <small>(col4)</small>:</span></td>
 							<td><input type="text" id="subtitle" name="subtitle"  maxlength="200" size="50" /></td>
 						</tr>
 						<tr>
-							<td>text:</td>
+							<td><span <?=($err && $error['text']==1)?($fontCol):('')?>>text:</span></td>
 							<td><textarea id="text" name="text" rows="4" cols="54"></textarea></td>
 						</tr>
 						<tr>
-							<td>media type:</td>
+							<td><span <?=($err && $error['media_type']==1)?($fontCol):('')?>>media type:</span></td>
 							<td>
 								<input type="radio" id="mdia_type_img" name="media_type" value="img" checked="checked"/> image
 								&nbsp;&nbsp;&nbsp;
@@ -74,7 +65,7 @@ if( $S->isLoggedIn('frontend') === true ) { $isLogin = true; }  else { header('L
 						</tr>
 						<tr>
 							<td>select file:</td>
-							<td><input type="file" id="file_upload" name="file_upload"> <small>(max. 5 MiB)</small></td>
+							<td><input type="file" id="file_upload" name="file_upload"> <small>(max. <?=ini_get('upload_max_filesize')?>)</small></td>
 						</tr>
 						<tr>
 							<td></td>

@@ -4,8 +4,7 @@ require_once 'backend/class/Box.php';
 
 ### Session
 $S = new Session();
-//echo "Session-ID: ".session_id()."<pre>"; print_r($_SESSION); echo "</pre>";
-$isLogin = false;
+global $isLogin = false;
 if( (isset($_GET['logout'])) && ($_GET['logout'] == 1) ) {
 	$S->destroySession();
 } else {
@@ -15,9 +14,7 @@ if( (isset($_GET['logout'])) && ($_GET['logout'] == 1) ) {
 $BOX = new Box();
 $BOX->loadCountAndFilenamesForCol4();
 $arrayCol4Data = $BOX->getCol4BoxData();
-//echo "<pre>"; print_r($arrayCol4Data); echo "</pre>";
 $arrayPtbData = $BOX->getPtbData();
-//echo "<pre>"; print_r($arrayPtbData); echo "</pre>";
 
 ?>
 <!DOCTYPE html>
@@ -29,54 +26,7 @@ $arrayPtbData = $BOX->getPtbData();
 	</head>
 	<body>
 		<div id="container" class="container">
-			<div id="menu_container" class="menu-container">
-				<a href="index.php">
-					<div id="menu_logo" class="nasa-logo">
-						<div class="fake">FAKE</div>
-						<img src="frontend/img/nasa-logo.svg" />
-					</div>
-				</a>
-				<div id="menu_main">
-					<table class="table-menu-main">
-						<tr>
-							<td>Missions</td>
-							<td>Galleries</td>
-							<td>NASA TV</td>
-							<td>Follow NASA</td>
-							<td>Downloads</td>
-							<td>About</td>
-							<td>NASA Audiences</td>
-							<td>
-								<input type="text" placeholder="Search" />
-								<span id="icon-connect" class="icon-connect"></span>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div id="menu_sub" class="div-menu-sub">
-					<table class="table-menu-sub">
-						<tr>
-							<td>International Space Station</td>
-							<td>Journey to Mars</td>
-							<td>Earth</td>
-							<td>Technology</td>
-							<td>Aeronautics</td>
-							<td>Solar System and Beyond</td>
-							<td>Education</td>
-							<td>History</td>
-							<td>Benefits to You</td>
-						</tr>
-					</table>
-					<div class="login-button">
-						<?php if($isLogin) {
-							echo "<a href=\"frontend/html/admin.php\"><input type=\"button\" value=\"Admin\" /></a>";
-							echo "<a href=\"index.php?logout=1\"><input type=\"button\" value=\"Logout\" /></a>";
-						} else {
-							echo "<a href=\"frontend/html/login.html\"><input type=\"button\" value=\"Login\" /></a>";
-						} ?>
-					</div>
-				</div>
-			</div>
+			<?php include 'frontend/html/menu.php'; ?>
 			<div id="main_container" class="main-container">
 				<table class="table-news">
 <!--

@@ -152,7 +152,7 @@ class Box {
 		if(  $this->isPtbTextLengthOk($array['middle']) === false ) {
 			$array['middle'] = $this->getShortenedText($array['middle']);
 		} 
-		return file_put_contents($this->getPtBFullPathScript(), json_encode($array));
+		return file_put_contents($this->getPtbFullPathScript(), json_encode($array));
 	}
 }
 ?>
