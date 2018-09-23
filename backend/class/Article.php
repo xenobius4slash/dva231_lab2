@@ -2,6 +2,7 @@
 class Article {
 	private $articleDir = '../../backend/content/article/';
 	private $articleDirInsert = '../content/article/';
+	private $articleCountFiles = null;
 	private $article = null;
 
 	function __construct() {}
@@ -15,6 +16,14 @@ class Article {
 		return $this->articleDirInsert;
 	}
 
+	private function getArticleCountFiles() {
+		return $this->articleCountFiles;
+	}
+
+	private function setArticleCountFiles($value) {
+		$this->articleCountFiles = $value;
+	}
+
 	private function getArticleFullpathById($id) {
 		return $this->getArticleDir()."article_$id.json";
 	}
@@ -22,6 +31,16 @@ class Article {
 	private function getArticleFullpathByIdInsert($id) {
 		return $this->getArticleDirInsert()."article_$id.json";
 	}
+
+	
+	private function loadCountArticleByCountFiles() {
+		$i = 0;
+		foreach( glob($this->getArticleDirInsert()."article_*.json") as $filename  ) {
+			$i++;
+		}
+		$this->setArticleCountFiles($i);
+	}
+
 
 	/** check if an article is loaded and valid
 	*	@return		Bool
@@ -73,8 +92,9 @@ class Article {
 	*	@return 	Bool
 	*/
 	public function createArticle() {
+		$this->loadCountArticleByCountFiles();
 		$article = array(
-			'id' => '',
+			'id' => ($this->getArticleCountFiles() + 1),
 			'title' => '',
 			'subtitle' => '',
 			'text' => '',
@@ -92,25 +112,23 @@ class Article {
 		$return = array('status' => null, 'msg' => '');
 		if( !$this->existArticleById($id) ) {
 			$return['status'] = false;
-			$return['status'] = 'the requested article does not exists';
+			$return['msg'] = 'the requested article does not exists';
 		} else {
 			$jsonArticle = file_get_contents($this->getArticleFullpathById($id));
 			if($jsonArticle === false) {
 				$return['status'] = false;
-				$return['status'] = 'the requested article does not exists';
+				$return['msg'] = 'the requested article does not exists';
 			} else {
-				var_dump($jsonArticle);
 				$article = json_decode($jsonArticle, true);
 				if(!is_array($article)) {
 					$return['status'] = false;
-					$return['status'] = 'the format of the article is not valid';
+					$return['msg'] = 'the format of the article is not valid';
 				} else {
 					$this->setLoadedArticle($article);
 					$return['status'] = true;
 				}
 			}
 		}
-		var_dump($return);
 		return $return;
 	}
 

@@ -53,7 +53,6 @@ class User {
 	*	@return		String
 	*/
 	private function getPasswordHashByUser($user) {
-		error_log("user: $user => password-hash: ".$this->getUserData()[$user]);
 		return $this->getUserData()[$user];
 	}
 

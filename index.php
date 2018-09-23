@@ -4,7 +4,7 @@ require_once 'backend/class/Box.php';
 
 ### Session
 $S = new Session();
-global $isLogin = false;
+$isLogin = false;
 if( (isset($_GET['logout'])) && ($_GET['logout'] == 1) ) {
 	$S->destroySession();
 } else {
@@ -61,14 +61,17 @@ $arrayPtbData = $BOX->getPtbData();
 							$img = $arrayCol4Data[$i]['img'];
 							$hl1 = $arrayCol4Data[$i]['hl1'];
 							$hl2 = $arrayCol4Data[$i]['hl2'];
+							$linkToArticle = $arrayCol4Data[$i]['link_to_article'];
 							$display = ($arrayCol4Data[$i]['display'] == 0)?('display-none'):('');
 							echo "<tr id=\"$id\" class=\"col4 $display\">";
 								if($img=='') { echo "<td colspan=\"4\" class=\"box-4col\" style=\"background-color: black;\">";  }
 								else { echo "<td colspan=\"4\" class=\"box-4col\" style=\"background-image: url('$img');\">";	}
-									echo "<div class=\"box-headline-4col-container\">";
-										echo "<span class=\"hl1-col4\">$hl1</span>";
-										echo "<span class=\"hl2-col4\">$hl2</span>";
-									echo "</div>";
+									if($linkToArticle !== null) { echo "<a href=\"frontend/html/article.php?id=$linkToArticle\">";  } 
+										echo "<div class=\"box-headline-4col-container\">";
+											echo "<span class=\"hl1-col4\">$hl1</span>";
+											echo "<span class=\"hl2-col4\">$hl2</span>";
+										echo "</div>";
+									if($linkToArticle !== null) { echo "</a>";  }
 								echo "</td>";
 							echo "</tr>";
 						}
@@ -95,33 +98,34 @@ $arrayPtbData = $BOX->getPtbData();
 							<span class="display-none">A little bit more informations about the topic "The Legacy of NASA's Dawn, Near End of Mission"</span>
 						</td>
 						<td id="box004" colspan="2" class="table-news-td-right box-2col">
-							<?php if($arrayPtbData['media_type'] == 'img') { 
-								echo "<div class=\"pat-picbox\" style=\"background-image: url('".$arrayPtbData['media']['img']."');\"><div class=\"pat-arrow\"></div></div>";
-							} else {
-								echo "<div class=\"pat-picbox\"><iframe width=\"100%\" height=\"98%\" src=\"".$arrayPtbData['media']['video']."\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe></div>";
-							} ?>
-							<div class="pat-textbox">
-								<div class="pat-textbox-text">
-									<span class="pat-textbox-hl"><?=$arrayPtbData['hl']?></span>
-									<br/><br/>
-									<span class="pat-textbox-middle"><?=$arrayPtbData['middle']?></span>
-									<?php if( count($arrayPtbData['bottom']) > 0 ) { 
-										echo "<br/><br/>";
-										echo "<span class=\"pat-textbox-bottom\">";
-										for($i=0; $i<count($arrayPtbData['bottom']);$i++) {
-											echo $arrayPtbData['bottom'][$i];
-											if( $i < (count($arrayPtbData['bottom'])-1) ) { echo "<br/>"; }
-										}
-										echo "</span>";
-									} ?>
+							<?php if($arrayPtbData['link_to_article'] !== null) { echo "<a href=\"frontend/html/article.php?id=".$arrayPtbData['link_to_article']."\">"; } ?>
+								<?php if($arrayPtbData['media_type'] == 'img') { 
+									echo "<div class=\"pat-picbox\" style=\"background-image: url('".$arrayPtbData['media']['img']."');\"><div class=\"pat-arrow\"></div></div>";
+								} else {
+									echo "<div class=\"pat-picbox\"><iframe width=\"100%\" height=\"98%\" src=\"".$arrayPtbData['media']['video']."\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe></div>";
+								} ?>
+								<div class="pat-textbox">
+									<div class="pat-textbox-text">
+										<span class="pat-textbox-hl"><?=$arrayPtbData['hl']?></span>
+										<br/><br/>
+										<span class="pat-textbox-middle"><?=$arrayPtbData['middle']?></span>
+										<?php if( count($arrayPtbData['bottom']) > 0 ) { 
+											echo "<br/><br/>";
+											echo "<span class=\"pat-textbox-bottom\">";
+											for($i=0; $i<count($arrayPtbData['bottom']);$i++) {
+												echo $arrayPtbData['bottom'][$i];
+												if( $i < (count($arrayPtbData['bottom'])-1) ) { echo "<br/>"; }
+											}
+											echo "</span>";
+										} ?>
+									</div>
 								</div>
-							</div>
+							<?php if($arrayPtbData['link_to_article'] !== null) { echo "</a>"; } ?>
 						</td>
 					</tr>
 					<tr>
 						<td id="box005" class="table-news-td-left box-1col">
-<!--							<iframe width="100%" height="98%" src="http://www.youtube.com/embed/KFFmSA4TDKA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
--->
+							<iframe width="100%" height="98%" src="http://www.youtube.com/embed/KFFmSA4TDKA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 						</td>
 						<td id="box006" colspan="2" class="table-news-td-middle box-2col">
 							<div class="box-headline-container">

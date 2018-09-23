@@ -136,12 +136,16 @@ class Box {
 		}
 	}
 
-	/** shortened the given text and add at the end "...";
+	/** shortened the given text and add at the end "..." if it is necessary;
 	*	@param		$text		String
 	*	@return		String
 	*/
-	private function getShortenedText($text) {
-		return substr($text, 0, $this->getPtbMaxTextLenght() ).'...';
+	public function getShortenedText($text) {
+		if(  $this->isPtbTextLengthOk($text) === false ) {
+			return substr($text, 0, $this->getPtbMaxTextLenght() ).'...';
+		} else {
+			return $text;
+		}
 	}
 
 	/**	write the data for the pictextbox into the json file (calling from the admin.php)
@@ -149,9 +153,9 @@ class Box {
 	*	@return		Bool
 	*/
 	public function writePtbDataScript($array) {
-		if(  $this->isPtbTextLengthOk($array['middle']) === false ) {
-			$array['middle'] = $this->getShortenedText($array['middle']);
-		} 
+//		if(  $this->isPtbTextLengthOk($array['middle']) === false ) {
+//			$array['middle'] = $this->getShortenedText($array['middle']);
+//		} 
 		return file_put_contents($this->getPtbFullPathScript(), json_encode($array));
 	}
 }

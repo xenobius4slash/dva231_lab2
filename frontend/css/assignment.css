@@ -220,6 +220,17 @@ body {
 	background-size: 100% 100%;	/* width, height */
 }
 
+/* expand the <a> to the whole cell */
+.box-4col a {
+	width: 100%;
+	display: block;
+	position: absolute;
+	top:0;
+	bottom:0;
+	right:0;
+	left:0;
+}
+
 
 /*** define the special "pic-arrow-text" (pat) box ***/
 /* define the picturebox */
@@ -499,4 +510,31 @@ body {
 
 .form-admin {
 	margin-left: 30%;
+}
+
+/**
+*	article page
+**/
+.article-error {
+	font-size: 25px;
+	color: red;
+	text-align: center;
+	padding-top: 20px;
+}
+
+.article-title {
+	
+}
+
+.article-subtitle {
+	padding-bottom: 20px;
+}
+
+.article-media {
+	float: left;
+	margin: 15px;
+}
+
+.article-text {
+
 }

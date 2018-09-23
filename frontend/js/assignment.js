@@ -19,7 +19,7 @@ window.onload = function(e){
 				col4Boxes[0].classList.remove('display-none');	// show hidden box
 			}
 		} 
-	}, 3000)
+	}, 30000)
 }
 
 /* hide more info */

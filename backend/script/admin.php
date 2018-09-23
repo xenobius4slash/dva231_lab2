@@ -43,28 +43,52 @@ if( isset($_POST['send_news']) ) {
 			if($errorFoundFileType === true ) {
 				error_log("[upload] Wrong file type, only JPG, JPEG, PNG, GIF, MP4, OGV, OGG, AVI, FLV are allowed."); 
 				$error['file_upload'][1] = 1;
-	//			header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error));
+				header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error));
 			} else {
 				$fullFilepath = $uploadDir . basename($_FILES["file_upload"]["name"]);
 				if(file_exists($fullFilepath)) {
 					error_log("[upload] The file already exists.");
 					$error['file_upload'][2] = 1;
-	//				header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error));
+					header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error));
 				} else {
 					$maxFileSize = substr(ini_get('upload_max_filesize'), 0, -1) * 1024 * 1024;
 					if ($_FILES["file_upload"]["size"] > $maxFileSize  ) {
 						error_log("[upload] The file is too large.");
 						$error['file_upload'][3] = 1;
-	//					header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error)
+						header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error)
 					} else {
 						if (move_uploaded_file($_FILES["file_upload"]["tmp_name"], $fullFilepath)) {
 							error_log("[upload] Upload complete ". basename( $_FILES["file_upload"]["name"]) );
 
-							/** create the box contents **/
+							/** create the box and article contents **/
+
+							// article
+							$textArray = explode("\n", $text);
+							$textArticle = '';
+							foreach($textArray as $line) {
+								$textArticle .= trim($line);
+								$textArticle .= "<br/>";
+							}
+							$textArticle = rtrim($textArticle, '<br/>');
+							
+							$ART = new Article();
+							$ART->createArticle();
+							$articleId = $ART->getArticleId();
+//							echo "article old<pre>"; print_r($ART->getLoadedArticle()); echo "</pre>";
+							$ART->setArticleId($articleId);
+							$ART->setArticleTitle($title);
+							$ART->setArticleSubtitle($subtitle);
+							$ART->setArticleText($textArticle);
+							$ART->setArticleMediaType($mediaType);
+							$ART->setArticleMediaPath($jsonDir.basename( $_FILES["file_upload"]["name"]));
+//							echo "article new<pre>"; print_r($ART->getLoadedArticle()); echo "</pre>";
+							$ART->writeLoadedArticle();
+
 							$BOX = new Box();
+
 							// pic-text-box
 							$arrayPtb = $BOX->getPtbDataScript();
-							echo "ptb old<pre>"; print_r($arrayPtb); echo "</pre>";
+//							echo "ptb old<pre>"; print_r($arrayPtb); echo "</pre>";
 							$arrayPtb['media_type'] = $mediaType;
 							$arrayPtb['media']['img'] = '';
 							$arrayPtb['media']['video'] = '';
@@ -74,43 +98,27 @@ if( isset($_POST['send_news']) ) {
 								$arrayPtb['media']['video'] = $jsonDir.basename( $_FILES["file_upload"]["name"]);
 							}
 							$arrayPtb['hl'] = $title;
-							$arrayPtb['middle'] = $text;
+							$arrayPtb['middle'] = $BOX->getShortenedText($text);
 							$arrayPtb['bottom'] = array();
-							echo "ptb new<pre>"; print_r($arrayPtb); echo "</pre>";
+							$arrayPtb['link_to_article'] = $articleId;
+//							echo "ptb new<pre>"; print_r($arrayPtb); echo "</pre>";
 							$BOX->writePtbDataScript($arrayPtb);
 
 							// col4 box
 							$BOX->loadCountAndFilenamesForCol4Script();
 							$countCol4 = $BOX->getCol4CountFiles();
-							echo "Count Filename: $countCol4<br/>";
+//							echo "Count Filename: $countCol4<br/>";
 							$col4Img = '';
 							if($mediaType == 'img') { $col4Img = $arrayPtb['media']['img'];	}
-							$arrayCol4 = array(	'id' => 'box001_'.($countCol4+1), 'img' => $col4Img, 'hl1' => $title, 'hl2' => $subtitle, 'display' => 0	);
-							echo "col4 new<pre>"; print_r($arrayCol4); echo "</pre>";
+							$arrayCol4 = array(	'id' => 'box001_'.($countCol4+1), 'img' => $col4Img, 'hl1' => $title, 'hl2' => $subtitle, 'link_to_article' => $articleId, 'display' => 0	);
+//							echo "col4 new<pre>"; print_r($arrayCol4); echo "</pre>";
 							$BOX->writeNewCol4BoxData($arrayCol4, ($countCol4+1));
 
-							// article
-							$articleId = 1;
-							$ART = new Article();
-//							$return = $ART->loadArticleById($articleId);
-							$ART->createArticle();
-							echo "<pre>"; print_r($ART); echo "<pre>";
-							var_dump($ART->getLoadedArticle());
-							echo "article old<pre>"; print_r($ART->getLoadedArticle()); echo "</pre>";
-							$ART->setArticleId($articleId);
-							$ART->setArticleTitle($title);
-							$ART->setArticleSubtitle($subtitle);
-							$ART->setArticleText($text);
-							$ART->setArticleMediaType($mediaType);
-							$ART->setArticleMediaPath($jsonDir.basename( $_FILES["file_upload"]["name"]));
-							echo "article new<pre>"; print_r($ART->getLoadedArticle()); echo "</pre>";
-							$ART->writeLoadedArticle();
-
-	//						header('Location: ../../frontend/html/admin.php?upload_ok=1');
+							header('Location: ../../frontend/html/admin.php?upload_ok=1');
 						} else {
 							error_log("[upload] Internal error.");
 							$error['file_upload'][4] = 1;
-	//						header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error)
+							header('Location: ../../frontend/html/admin.php?upload_ok=0&error='.json_encode($error)
 						}
 					}
 				}
