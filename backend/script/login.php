@@ -26,5 +26,5 @@ if( isset($_POST['login_submit']) ) {
 		}
 	}
 }
-header('Location: ../../index.php');
+header('Location: ../../frontend/html/login.php?login_fail=1');
 ?>

@@ -16,7 +16,11 @@ if( $S->isLoggedIn('frontend') === true ) { header('Location: ../../index.php');
 		<div id="container" class="container">
 			<?php include 'menu.php'; ?>
 			<div id="main_container" class="main-container">
-				<div class="page-title">login page</div>
+				<div class="page-title"></div>
+				<?php if(isset($_GET['login_fail']) && $_GET['login_fail'] == 1) {
+					echo "<div class=\"error message\">User or/and password incorrect.</div>";
+				}
+				?>
 				<form id="login_form" method="post" action="../../backend/script/login.php" class="login-form">
 					<table>
 						<tbody>

@@ -64,7 +64,8 @@ $arrayPtbData = $BOX->getPtbData();
 							$linkToArticle = $arrayCol4Data[$i]['link_to_article'];
 							$display = ($arrayCol4Data[$i]['display'] == 0)?('display-none'):('');
 							echo "<tr id=\"$id\" class=\"col4 $display\">";
-								if($img=='') { echo "<td colspan=\"4\" class=\"box-4col\" style=\"background-color: black;\">";  }
+//								if($img=='') { echo "<td colspan=\"4\" class=\"box-4col\" style=\"background-color: rgb(21, 65, 140);\">";  }
+								if($img=='') { echo "<td colspan=\"4\" class=\"box-4col\" style=\"background-image: url('frontend/img/default_col4.png'); \">";  }
 								else { echo "<td colspan=\"4\" class=\"box-4col\" style=\"background-image: url('$img');\">";	}
 									if($linkToArticle !== null) { echo "<a href=\"frontend/html/article.php?id=$linkToArticle\">";  } 
 										echo "<div class=\"box-headline-4col-container\">";

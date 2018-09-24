@@ -2,8 +2,13 @@
 // check from where the webseite call come
 $url = $_SERVER['REQUEST_URI'];
 $pos = strpos($url, "?");
+// if exist GET-Parameters
 if($pos !== false) { $url = substr($url, 0, -(strlen($url)-$pos) ); }
-if( substr($url, -9) == 'index.php' ) { $index = true; } else { $index = false; }
+// if exist "index.php"
+if( substr($url, -9) == 'index.php' ) { $index = true; } 
+// if there are no index.php written
+elseif( substr($url, -1) == '/' ) {	$index = true; } 
+else { $index = false; }
 ?>
 <div id="menu_container" class="menu-container">
 	<a href="<?=($index)?(''):('../../')?>index.php">

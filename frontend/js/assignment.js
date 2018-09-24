@@ -19,7 +19,7 @@ window.onload = function(e){
 				col4Boxes[0].classList.remove('display-none');	// show hidden box
 			}
 		} 
-	}, 30000)
+	}, 3000)
 }
 
 /* hide more info */
@@ -39,4 +39,18 @@ function show(e){
 	e.parentNode.nextSibling.nextSibling.innerHTML = temp;	
 	e.classList.add('moreInfo');
 	e.previousSibling.previousSibling.classList.add('display-none');
+}
+
+function selectRadioImg() {
+	console.log("selectRadioImg()");
+	var elem = document.getElementById("file_upload");
+	console.log(elem);
+	elem.setAttribute('accept', '.jpg,.jpeg,.png,.gif');
+}
+
+function selectRadioVideo() {
+	console.log("selectRadioVideo()");
+	var elem = document.getElementById("file_upload");
+	console.log(elem);
+	elem.setAttribute('accept', '.mp4,.ogv,.ogg,.avi,.flv');
 }
